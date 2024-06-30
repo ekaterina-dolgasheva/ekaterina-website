@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('load', () => {
         setTimeout(() => {
             loader.classList.add('hidden');
-        }, 25); // Tempo di visualizzazione del loader
+        }, 2500); // Tempo di visualizzazione del loader
     });
 
     const bioButtonIta = document.getElementById('bio-button-ita');
