@@ -6,47 +6,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const loader = document.getElementById('loader');
 
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            loader.classList.add('hidden');
-        }, 2500); // Tempo di visualizzazione del loader
-    });
+    const firstVisitTimestamp = localStorage.getItem('firstVisitTimestamp');
+    const currentTime = new Date().getTime();
+    const tenMinutes = 300000; // 5 minuti in millisecondi
 
-    const bioButtonIta = document.getElementById('bio-button-ita');
-    const bioButtonEng = document.getElementById('bio-button-eng');
-    const bioModalIta = document.getElementById('bio-modal-ita');
-    const bioModalEng = document.getElementById('bio-modal-eng');
+    // Verifica se è la prima visita o se sono passati più di 10 minuti dall'ultima visita
+    if (loader) {
+        if (!firstVisitTimestamp || (currentTime - firstVisitTimestamp) > tenMinutes) {
+            localStorage.setItem('firstVisitTimestamp', currentTime);
+
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    loader.classList.add('hidden');
+                }, 1500); // Tempo di visualizzazione del loader
+            });
+        } else {
+            loader.style.display = 'none'; // Nasconde il loader se non è la prima visita
+        }
+    }
+
+
+
     const closeBtns = document.querySelectorAll('.close');
-
-    bioButtonIta.addEventListener('click', () => {
-        bioModalIta.style.display = 'flex';
-        disableScroll();
-        disableRellax(); // Disabilita Rellax quando la lightbox si apre
-    });
-
-    bioButtonEng.addEventListener('click', () => {
-        bioModalEng.style.display = 'flex';
-        disableScroll();
-        disableRellax(); // Disabilita Rellax quando la lightbox si apre
-    });
 
     // Aggiungi event listener a tutti i bottoni di chiusura
     closeBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-            bioModalIta.style.display = 'none';
-            bioModalEng.style.display = 'none';
+            // bioModalIta.style.display = 'none';
+            // bioModalEng.style.display = 'none';
             enableScroll();
             enableRellax(); // Riabilita Rellax quando la lightbox si chiude
         });
-    });
-
-    window.addEventListener('click', (event) => {
-        if (event.target === bioModalIta || event.target === bioModalEng) {
-            bioModalIta.style.display = 'none';
-            bioModalEng.style.display = 'none';
-            enableScroll();
-            enableRellax(); // Riabilita Rellax quando la lightbox si chiude
-        }
     });
 
     const galleryImages = document.querySelectorAll('.gallery-image');
@@ -104,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const links = document.querySelectorAll('a[href^="#"]');
     links.forEach(link => {
-        link.addEventListener('click', function(event) {
+        link.addEventListener('click', function (event) {
             event.preventDefault();
             const targetId = this.getAttribute('href').substring(1);
             const targetElement = document.getElementById(targetId);
@@ -133,4 +123,35 @@ document.addEventListener('DOMContentLoaded', () => {
             center: true
         });
     }
+
+    const videos = document.querySelectorAll('.video');
+    const modal = document.getElementById('lightbox');
+    const videoFrame = document.getElementById('video-frame');
+    const closeBtn = document.querySelector('.close-video');
+
+    if (closeBtn) {
+        videos.forEach(video => {
+            video.addEventListener('click', function (event) {
+                event.preventDefault();
+                const videoUrl = video.getAttribute('href');
+                const embedUrl = videoUrl.replace("watch?v=", "embed/");
+                videoFrame.src = embedUrl;
+                modal.style.display = "block";
+            });
+        });
+
+        closeBtn.addEventListener('click', function () {
+            modal.style.display = "none";
+            videoFrame.src = "";
+        });
+
+        window.addEventListener('click', function (event) {
+            if (event.target === modal) {
+                modal.style.display = "none";
+                videoFrame.src = "";
+            }
+        });
+    }
+
+
 });
