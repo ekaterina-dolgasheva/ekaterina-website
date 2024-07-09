@@ -1,11 +1,21 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    let url = window.location.href;
-    if (url.endsWith('.html')) {
-        // Rimuove l'estensione ".html"
-        newUrl = url.slice(0, -5);
+    const currentUrl = window.location.href;
+    let newUrl = currentUrl;
+
+    // Controlla se la URL termina con "index.html"
+    if (currentUrl.endsWith('index.html')) {
+        // Rimuove "index.html" e imposta la nuova URL come "/"
+        newUrl = currentUrl.slice(0, -10) || '/';
+    } else if (currentUrl.endsWith('.html')) {
+        // Rimuove solo ".html"
+        newUrl = currentUrl.slice(0, -5);
+    }
+
+    // Sostituisce la cronologia se l'URL è cambiata
+    if (currentUrl !== newUrl) {
         history.replaceState(null, '', newUrl);
-      }
+    }
 
     let rellax = new Rellax('.rellax', {
         speed: -2,
