@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     var url = window.location.href;
-    url = url.split('.html');
+    url = url[0].split('.html')[0];
     window.history.replaceState(null, null, url);
-    
+
     let rellax = new Rellax('.rellax', {
         speed: -2,
         center: true
