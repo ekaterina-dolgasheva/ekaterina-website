@@ -1,10 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    var url = window.location.href;
-    if (url.includes("html")) {
-        url = url[0].split('.html');
-        window.history.replaceState(null, null, url);
-    }
+    let url = window.location.href;
+    if (url.endsWith('.html')) {
+        // Rimuove l'estensione ".html"
+        newUrl = url.slice(0, -5);
+        history.replaceState(null, '', newUrl);
+      }
 
     let rellax = new Rellax('.rellax', {
         speed: -2,
