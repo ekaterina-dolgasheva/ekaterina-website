@@ -1,29 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
-
     const currentUrl = window.location.href;
     let newUrl = currentUrl;
 
     // Controlla se la URL termina con "index.html"
     if (currentUrl.endsWith('index.html')) {
-        // Rimuove "index.html" e imposta la nuova URL come "/"
         newUrl = currentUrl.slice(0, -10) || '/';
-    } else if (currentUrl.endsWith('.html')) {
-        // Rimuove solo ".html"
-        newUrl = currentUrl.slice(0, -5);
-    }
-
-    // Sostituisce la cronologia se l'URL è cambiata
-    if (currentUrl !== newUrl) {
-        history.replaceState(null, '', newUrl);
-    }
-
-    let rellax = new Rellax('.rellax', {
-        speed: -2,
-        center: true
-    });
+    } 
+  
+    history.replaceState(null, '', newUrl);
 
     const loader = document.getElementById('loader');
-
     const firstVisitTimestamp = localStorage.getItem('firstVisitTimestamp');
     const currentTime = new Date().getTime();
     const tenMinutes = 300000; // 5 minuti in millisecondi
@@ -36,22 +22,47 @@ document.addEventListener('DOMContentLoaded', () => {
             window.addEventListener('load', () => {
                 setTimeout(() => {
                     loader.classList.add('hidden');
-                }, 1500); // Tempo di visualizzazione del loader
+                }, 2200); // Tempo di visualizzazione del loader
             });
         } else {
             loader.style.display = 'none'; // Nasconde il loader se non è la prima visita
         }
     }
 
+    // Parallax initialization
+    let rellax;
 
+    function initializeRellax() {
+        rellax = new Rellax('.rellax', {
+            speed: -2,
+            center: true
+        });
+    }
+
+    // Funzione per verificare se tutte le immagini sono caricate
+    function imagesLoaded() {
+        const images = document.querySelectorAll('img');
+        return Array.from(images).every(img => img.complete);
+    }
+
+    // Inizializza Rellax solo dopo che tutte le immagini sono caricate
+    function initializeRellaxAfterImagesLoad() {
+        if (imagesLoaded()) {
+            initializeRellax();
+        } else {
+            window.addEventListener('load', () => {
+                initializeRellax();
+            });
+        }
+    }
+
+    initializeRellaxAfterImagesLoad();
 
     const closeBtns = document.querySelectorAll('.close');
 
     // Aggiungi event listener a tutti i bottoni di chiusura
     closeBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-            // bioModalIta.style.display = 'none';
-            // bioModalEng.style.display = 'none';
             enableScroll();
             enableRellax(); // Riabilita Rellax quando la lightbox si chiude
         });
@@ -132,14 +143,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function disableRellax() {
-        rellax.destroy(); // Disattiva Rellax
+        if (rellax) {
+            rellax.destroy(); // Disattiva Rellax
+        }
     }
 
     function enableRellax() {
-        rellax = new Rellax('.rellax', { // Riattiva Rellax
-            speed: -2,
-            center: true
-        });
+        initializeRellax(); // Riattiva Rellax
     }
 
     const videos = document.querySelectorAll('.video');
@@ -170,6 +180,4 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
-
 });

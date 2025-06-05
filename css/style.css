@@ -463,17 +463,17 @@ nav ul li span {
     width: 100%;
     height: 100%;
     /* overflow: auto; */
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: hsla(0, 0%, 35%, 0.4);
     z-index: 10;
 }
 
 .modal-video-content {
-    background-color: #f5f5dc;
+    /* background-color: #f5f5dc; */
     margin: 10% auto;
-    padding: 5px;
+    /* padding: 5px; */
     border-radius: 10px;
     border: none;
-    width: 80%;
+    width: 100%;
     max-width: 700px;
     position: relative;
 }
@@ -532,7 +532,6 @@ nav ul li span {
 .video-gallery a img {
     width: 100%;
     height: auto;
-    border: 3px solid beige;
 }
 
 
@@ -543,8 +542,6 @@ nav ul li span {
 
     .modal-video-content {
         margin: 50% auto;
-        padding: 10px;
-
     }
 }
 
