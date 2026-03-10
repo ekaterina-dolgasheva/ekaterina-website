@@ -73,14 +73,19 @@ document.addEventListener('DOMContentLoaded', () => {
         image.addEventListener('click', () => {
             const lightbox = document.createElement('div');
             lightbox.classList.add('lightbox');
+            lightbox.setAttribute('role', 'dialog');
+            lightbox.setAttribute('aria-label', 'Visualizzazione immagine ingrandita');
             document.body.appendChild(lightbox);
 
             const img = document.createElement('img');
             img.src = image.src;
+            img.alt = image.alt || 'Immagine ingrandita';
             lightbox.appendChild(img);
 
             const closeBtn = document.createElement('span');
             closeBtn.classList.add('close');
+            closeBtn.setAttribute('role', 'button');
+            closeBtn.setAttribute('aria-label', 'Chiudi');
             closeBtn.innerHTML = '&times;';
             lightbox.appendChild(closeBtn);
 
