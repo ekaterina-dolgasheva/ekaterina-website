@@ -2,72 +2,107 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentUrl = window.location.href;
     let newUrl = currentUrl;
 
-    // Controlla se la URL termina con "index.html"
     if (currentUrl.endsWith('index.html')) {
         newUrl = currentUrl.slice(0, -10) || '/';
-    } 
-  
+    }
+
     history.replaceState(null, '', newUrl);
 
+    // Loader optimization: wait for both animation and window load
     const loader = document.getElementById('loader');
     const firstVisitTimestamp = localStorage.getItem('firstVisitTimestamp');
     const currentTime = new Date().getTime();
-    const tenMinutes = 300000; // 5 minuti in millisecondi
+    const fiveMinutes = 300000;
 
-    // Verifica se è la prima visita o se sono passati più di 10 minuti dall'ultima visita
     if (loader) {
-        if (!firstVisitTimestamp || (currentTime - firstVisitTimestamp) > tenMinutes) {
+        if (!firstVisitTimestamp || (currentTime - firstVisitTimestamp) > fiveMinutes) {
             localStorage.setItem('firstVisitTimestamp', currentTime);
 
-            window.addEventListener('load', () => {
-                setTimeout(() => {
+            let animationDone = false;
+            let pageLoaded = false;
+
+            function hideLoader() {
+                if (animationDone && pageLoaded) {
                     loader.classList.add('hidden');
-                }, 2200); // Tempo di visualizzazione del loader
+                }
+            }
+
+            setTimeout(() => {
+                animationDone = true;
+                hideLoader();
+            }, 1400);
+
+            window.addEventListener('load', () => {
+                pageLoaded = true;
+                hideLoader();
             });
         } else {
-            loader.style.display = 'none'; // Nasconde il loader se non è la prima visita
+            loader.style.display = 'none';
         }
     }
 
-    // Parallax initialization
-    let rellax;
+    // Custom lightweight parallax (replaces Rellax CDN)
+    const rellaxElements = document.querySelectorAll('.rellax');
+    let parallaxEnabled = true;
+    let parallaxTicking = false;
+    const visibleElements = new Set();
 
-    function initializeRellax() {
-        rellax = new Rellax('.rellax', {
-            speed: -2,
-            center: true
+    if (rellaxElements.length > 0) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    visibleElements.add(entry.target);
+                } else {
+                    visibleElements.delete(entry.target);
+                }
+            });
+        }, { rootMargin: '100px' });
+
+        rellaxElements.forEach(el => observer.observe(el));
+
+        function updateParallax() {
+            if (!parallaxEnabled) return;
+            const scrollY = window.scrollY;
+            visibleElements.forEach(el => {
+                const speed = parseFloat(el.dataset.rellaxSpeed) || -2;
+                const offset = scrollY * speed * 0.1;
+                el.style.transform = `translate3d(0, ${offset}px, 0)`;
+            });
+            parallaxTicking = false;
+        }
+
+        window.addEventListener('scroll', () => {
+            if (!parallaxTicking && parallaxEnabled) {
+                parallaxTicking = true;
+                requestAnimationFrame(updateParallax);
+            }
+        }, { passive: true });
+
+        // Initial update
+        updateParallax();
+    }
+
+    function disableRellax() {
+        parallaxEnabled = false;
+        rellaxElements.forEach(el => {
+            el.style.transform = '';
         });
     }
 
-    // Funzione per verificare se tutte le immagini sono caricate
-    function imagesLoaded() {
-        const images = document.querySelectorAll('img');
-        return Array.from(images).every(img => img.complete);
+    function enableRellax() {
+        parallaxEnabled = true;
     }
-
-    // Inizializza Rellax solo dopo che tutte le immagini sono caricate
-    function initializeRellaxAfterImagesLoad() {
-        if (imagesLoaded()) {
-            initializeRellax();
-        } else {
-            window.addEventListener('load', () => {
-                initializeRellax();
-            });
-        }
-    }
-
-    initializeRellaxAfterImagesLoad();
 
     const closeBtns = document.querySelectorAll('.close');
 
-    // Aggiungi event listener a tutti i bottoni di chiusura
     closeBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             enableScroll();
-            enableRellax(); // Riabilita Rellax quando la lightbox si chiude
+            enableRellax();
         });
     });
 
+    // Gallery lightbox with picture/source support
     const galleryImages = document.querySelectorAll('.gallery-image');
     galleryImages.forEach(image => {
         image.addEventListener('click', () => {
@@ -78,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.appendChild(lightbox);
 
             const img = document.createElement('img');
-            img.src = image.src;
+            img.src = image.dataset.full || image.currentSrc || image.src;
             img.alt = image.alt || 'Immagine ingrandita';
             lightbox.appendChild(img);
 
@@ -90,19 +125,19 @@ document.addEventListener('DOMContentLoaded', () => {
             lightbox.appendChild(closeBtn);
 
             disableScroll();
-            disableRellax(); // Disabilita Rellax quando la lightbox si apre
+            disableRellax();
 
             closeBtn.addEventListener('click', () => {
                 lightbox.remove();
                 enableScroll();
-                enableRellax(); // Riabilita Rellax quando la lightbox si chiude
+                enableRellax();
             });
 
             lightbox.addEventListener('click', (e) => {
                 if (e.target === lightbox) {
                     lightbox.remove();
                     enableScroll();
-                    enableRellax(); // Riabilita Rellax quando la lightbox si chiude
+                    enableRellax();
                 }
             });
         });
@@ -145,16 +180,6 @@ document.addEventListener('DOMContentLoaded', () => {
             top: offsetTop,
             behavior: 'smooth'
         });
-    }
-
-    function disableRellax() {
-        if (rellax) {
-            rellax.destroy(); // Disattiva Rellax
-        }
-    }
-
-    function enableRellax() {
-        initializeRellax(); // Riattiva Rellax
     }
 
     const videos = document.querySelectorAll('.video');
