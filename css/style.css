@@ -222,13 +222,14 @@ html {
         url('../images/gallery/about2.jpg') type('image/jpeg')
     );
     background-size: cover;
-    background-position: center right;
+    background-position-x: right;
+    background-position-y: center;
     z-index: -1;
 }
 
 /* Parallax GPU acceleration */
 .rellax {
-    will-change: transform;
+    will-change: background-position;
 }
 
 /* Footer Styles */

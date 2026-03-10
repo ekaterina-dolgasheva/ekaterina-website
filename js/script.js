@@ -41,27 +41,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Custom lightweight parallax (replaces Rellax CDN)
+    // Custom lightweight parallax via background-position (replaces Rellax CDN)
     const rellaxElements = document.querySelectorAll('.rellax');
     let parallaxEnabled = true;
     let parallaxTicking = false;
     const visibleElements = new Set();
-    const elementData = new Map();
 
     if (rellaxElements.length > 0) {
-        // Cache initial positions
-        function cachePositions() {
-            rellaxElements.forEach(el => {
-                const rect = el.getBoundingClientRect();
-                elementData.set(el, {
-                    top: rect.top + window.scrollY,
-                    height: rect.height
-                });
-            });
-        }
-        cachePositions();
-        window.addEventListener('resize', cachePositions);
-
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -76,18 +62,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function updateParallax() {
             if (!parallaxEnabled) return;
-            const scrollY = window.scrollY;
-            const windowHeight = window.innerHeight;
             visibleElements.forEach(el => {
-                const data = elementData.get(el);
-                if (!data) return;
                 const speed = parseFloat(el.dataset.rellaxSpeed) || -2;
-                // Calculate offset relative to element center vs viewport center
-                const elCenter = data.top + data.height / 2;
-                const viewCenter = scrollY + windowHeight / 2;
-                const distance = viewCenter - elCenter;
-                const offset = distance * speed * 0.15;
-                el.style.transform = `translate3d(0, ${offset}px, 0)`;
+                const rect = el.getBoundingClientRect();
+                // Shift background-position based on element's viewport position
+                const offset = rect.top * speed * 0.05;
+                el.style.backgroundPositionY = 'calc(50% + ' + offset + 'px)';
             });
             parallaxTicking = false;
         }
@@ -99,15 +79,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }, { passive: true });
 
-        // Initial update
         updateParallax();
     }
 
     function disableRellax() {
         parallaxEnabled = false;
-        rellaxElements.forEach(el => {
-            el.style.transform = '';
-        });
     }
 
     function enableRellax() {
