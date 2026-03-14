@@ -80,6 +80,46 @@
 </head>
 
 <body>
+    <div id="cb-overlay"></div>
+    <div id="cookie-banner" role="dialog" aria-label="Consenso cookie" aria-modal="false">
+        <p class="cb-text">Questo sito usa cookie analitici (Google Analytics 4) per monitorare le visite. Serve il tuo consenso esplicito per attivarli.</p>
+        <div class="cb-links">
+            <a href="privacy-policy.html" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+            <a href="privacy-policy.html#cookie" target="_blank" rel="noopener noreferrer">Cookie Policy</a>
+        </div>
+        <div class="cb-buttons">
+            <button id="cb-accept" class="cb-btn cb-btn--accept" type="button">Accetta analytics</button>
+            <button id="cb-reject" class="cb-btn cb-btn--reject" type="button">Rifiuta tutto</button>
+            <button id="cb-prefs" class="cb-btn cb-btn--prefs" type="button">Gestisci preferenze</button>
+        </div>
+    </div>
+    <div id="cookie-prefs-modal" role="dialog" aria-label="Preferenze cookie" aria-modal="true">
+        <div class="cp-backdrop"></div>
+        <div class="cp-dialog" tabindex="-1">
+            <h2>Preferenze cookie</h2>
+            <div class="cp-section">
+                <div class="cp-section-header">
+                    <span class="cp-section-title">Cookie tecnici</span>
+                    <span class="cp-required">Sempre attivi</span>
+                </div>
+                <p>Necessari per il funzionamento del sito. Non raccolgono dati personali.</p>
+            </div>
+            <div class="cp-section">
+                <div class="cp-section-header">
+                    <span class="cp-section-title">Cookie analitici (Google Analytics 4)</span>
+                    <label class="cb-toggle">
+                        <input type="checkbox" id="cb-analytics-toggle" aria-label="Attiva cookie analitici">
+                        <span class="cb-toggle-slider"></span>
+                    </label>
+                </div>
+                <p>Raccolgono dati anonimi sulle visite (pagine viste, durata sessione, provenienza geografica, dispositivo) per aiutarci a migliorare il sito. Nessun dato viene usato per pubblicitá o profilazione.</p>
+            </div>
+            <div class="cp-actions">
+                <button id="cb-save-prefs" class="cb-btn cb-btn--save" type="button">Salva preferenze</button>
+                <button id="cb-cancel-prefs" class="cb-btn cb-btn--cancel" type="button">Annulla</button>
+            </div>
+        </div>
+    </div>
     <nav>
         <ul>
             <li><span>Video Gallery</span></li>
@@ -169,6 +209,10 @@
                     <source type="image/webp" srcset="./images/branding/ekaterina-name-2.webp">
                     <img src="./images/branding/ekaterina-name-2.png" alt="Ekaterina Dolgasheva" width="600" height="300">
                 </picture>
+                <div style="display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:4px">
+                    <a href="privacy-policy.html" style="font-size:0.85rem">Privacy Policy</a>
+                    <button id="cookie-revoke" type="button" aria-label="Gestisci consenso cookie" title="Gestisci consenso cookie"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 512 512" fill="currentColor"><path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm-40-176h24v-64h-24c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24h-80c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-144a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg></button>
+                </div>
                 <p>Copyright © <span class="current-year"></span> Ekaterina Dolgasheva</p>
             </div>
         </div>
