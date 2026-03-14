@@ -82,15 +82,20 @@
 <body>
     <div id="cb-overlay"></div>
     <div id="cookie-banner" role="dialog" aria-label="Consenso cookie" aria-modal="false">
-        <p class="cb-text">Questo sito usa cookie analitici (Google Analytics 4) per monitorare le visite. Serve il tuo consenso esplicito per attivarli.</p>
-        <div class="cb-links">
-            <a href="privacy-policy.html" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
-            <a href="privacy-policy.html#cookie" target="_blank" rel="noopener noreferrer">Cookie Policy</a>
-        </div>
-        <div class="cb-buttons">
-            <button id="cb-accept" class="cb-btn cb-btn--accept" type="button">Accetta analytics</button>
-            <button id="cb-reject" class="cb-btn cb-btn--reject" type="button">Rifiuta tutto</button>
-            <button id="cb-prefs" class="cb-btn cb-btn--prefs" type="button">Gestisci preferenze</button>
+        <div class="cb-inner">
+            <div class="cb-icon"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M247.2 17c-22.1-3.1-44.6 .9-64.4 11.4l-74 39.5C89.1 78.4 73.2 94.9 63.4 115L24.9 189.3c-10.6 21.8-14.2 46.4-10.2 70.4l15.3 89.1c4.1 24 15.8 45.9 33.1 62.5L127 471.4c17.6 16.9 40.1 27.6 64.2 30.5l90 10.7c25.1 3 50.5-2.1 72.6-14.4l71.5-39.8c22.1-12.3 39.6-31.4 50-54.5l34-75.5c10.6-23.5 13.2-49.7 7.6-74.7L498.4 164c-5.7-25.3-19.1-48-38.4-64.9L400.4 44.1C381.3 27.5 357.1 17.8 331.7 16.7L247.2 17zm-7.8 81.6c11.3 0 22.6 4.3 31.2 12.9s12.9 19.9 12.9 31.2c0 6.7-1.5 13.1-4.2 18.8 10 3.5 19 9.5 26 17.6 7.9 9.2 12.7 20.4 14.1 32.1 9.5-1.6 19.4-.7 28.5 3 11.5 4.6 21 12.8 27.4 23.3s9.2 22.6 8.2 34.4c-1 11.8-5.9 22.9-14.1 31.7-8.2 8.7-19.1 14.4-30.8 16.2-3.4 16.4-13.1 30.8-27.2 40.4-14.1 9.5-31 13.4-47.6 10.8-7.2 13.1-18.6 23.3-32.4 29.1-13.8 5.8-29.2 6.8-43.6 2.9-14.4-3.9-27-12.6-35.8-24.6-6.5 2.3-13.3 3.4-20.1 3.4-17 0-33.3-6.7-45.3-18.8-12-12-18.8-28.3-18.8-45.3 0-9.8 2.2-19.2 6.4-27.6-15-7.5-26.7-20.3-32.7-35.8-5.9-15.5-5.6-32.6 .8-47.9 6.5-15.3 18.3-27.6 33.2-34.6-.4-2.8-.6-5.6-.6-8.3 0-23.7 12.7-45.6 33.3-57.4 20.6-11.8 46-11.8 66.6 0 8.1-12.4 21.5-19.4 36-19.4zm0 48a16 16 0 1 0 0 32 16 16 0 1 0 0-32zm-80 64a16 16 0 1 0 0 32 16 16 0 1 0 0-32zm96 16a16 16 0 1 0 0 32 16 16 0 1 0 0-32zm-48 64a16 16 0 1 0 0 32 16 16 0 1 0 0-32zm80 16a16 16 0 1 0 0 32 16 16 0 1 0 0-32zm-112 48a16 16 0 1 0 0 32 16 16 0 1 0 0-32z"/></svg></div>
+            <div class="cb-body">
+                <p class="cb-text">Questo sito usa cookie analitici (Google Analytics 4) per monitorare le visite. Serve il tuo consenso esplicito per attivarli.</p>
+                <div class="cb-links">
+                    <a href="privacy-policy.html" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+                    <a href="privacy-policy.html#cookie" target="_blank" rel="noopener noreferrer">Cookie Policy</a>
+                </div>
+            </div>
+            <div class="cb-actions">
+                <button id="cb-accept" class="cb-btn cb-btn--accept" type="button">Accetta analytics</button>
+                <button id="cb-reject" class="cb-btn cb-btn--reject" type="button">Rifiuta tutto</button>
+                <button id="cb-prefs" class="cb-btn cb-btn--prefs" type="button">Gestisci preferenze</button>
+            </div>
         </div>
     </div>
     <div id="cookie-prefs-modal" role="dialog" aria-label="Preferenze cookie" aria-modal="true">
