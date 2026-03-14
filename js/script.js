@@ -148,6 +148,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     enableRellax();
                 }
             });
+
+            document.addEventListener('keydown', function onEsc(e) {
+                if (e.key === 'Escape') {
+                    lightbox.remove();
+                    enableScroll();
+                    enableRellax();
+                    document.removeEventListener('keydown', onEsc);
+                }
+            });
         });
     });
 
@@ -213,6 +222,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         window.addEventListener('click', function (event) {
             if (event.target === modal) {
+                modal.style.display = "none";
+                videoFrame.src = "";
+            }
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && modal.style.display === 'block') {
                 modal.style.display = "none";
                 videoFrame.src = "";
             }
