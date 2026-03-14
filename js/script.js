@@ -135,6 +135,37 @@ document.addEventListener('DOMContentLoaded', () => {
         showBanner();
     });
 
+    // --- Eventi: sposta eventi passati ---
+    (function() {
+        var cards = document.querySelectorAll('.evento-card[data-date]');
+        if (!cards.length) return;
+        var passatiSection = document.querySelector('.eventi-passati-section');
+        var passatiList = passatiSection ? passatiSection.querySelector('.eventi-list') : null;
+        var placeholder = document.querySelector('.eventi-placeholder');
+        var futureList = document.querySelector('.eventi-section .eventi-list');
+        var today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        cards.forEach(function(card) {
+            var parts = card.getAttribute('data-date').split('-');
+            var eventDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+            eventDate.setHours(0, 0, 0, 0);
+            // Evento passato = il giorno successivo alla data dell'evento
+            var nextDay = new Date(eventDate);
+            nextDay.setDate(nextDay.getDate() + 1);
+            if (today >= nextDay && passatiList) {
+                passatiList.appendChild(card);
+            }
+        });
+
+        if (passatiList && passatiList.children.length > 0 && passatiSection) {
+            passatiSection.style.display = '';
+        }
+        if (futureList && futureList.children.length === 0 && placeholder) {
+            placeholder.style.display = '';
+        }
+    })();
+
     // Set current year in copyright
     document.querySelectorAll('.current-year').forEach(el => {
         el.textContent = new Date().getFullYear();

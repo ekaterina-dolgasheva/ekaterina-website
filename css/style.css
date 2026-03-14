@@ -1418,6 +1418,80 @@ table th {
     font-style: italic;
 }
 
+/* Eventi Cards */
+.eventi-list {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.evento-card {
+    border: 2px solid var(--color-burgundy);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin-bottom: 20px;
+    text-align: left;
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.evento-card__titolo {
+    color: var(--color-burgundy);
+    font-size: 1.15rem;
+    margin: 0 0 10px;
+}
+
+.evento-card__data {
+    color: var(--color-burgundy);
+    font-weight: bold;
+    font-size: 0.95rem;
+    margin: 0 0 6px;
+    font-style: normal;
+}
+
+.evento-card__luogo {
+    color: #444;
+    font-size: 0.95rem;
+    margin: 0 0 6px;
+    font-style: normal;
+}
+
+.evento-card__dettagli {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 0;
+    font-style: italic;
+}
+
+/* Eventi Passati Section */
+.eventi-passati-section {
+    text-align: center;
+    padding: 40px 20px;
+    background-color: var(--color-beige);
+    background-image: url(../images/bg/background-pattern-4.webp);
+    background-blend-mode: multiply;
+    position: relative;
+    z-index: 10;
+}
+
+.eventi-passati-section h2 {
+    color: var(--color-burgundy);
+    margin-bottom: 20px;
+    opacity: 0.7;
+}
+
+.eventi-passati-section .evento-card {
+    opacity: 0.55;
+}
+
+@media (max-width: 768px) {
+    .evento-card {
+        padding: 18px 20px;
+    }
+
+    .evento-card__titolo {
+        font-size: 1.05rem;
+    }
+}
+
 /* 404 Page */
 .page-404 {
     text-align: center;
