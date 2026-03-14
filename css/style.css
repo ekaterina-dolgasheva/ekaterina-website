@@ -227,10 +227,7 @@ html {
     z-index: -1;
 }
 
-/* Parallax GPU acceleration */
-.rellax {
-    will-change: background-position;
-}
+/* Parallax GPU acceleration — will-change applied via JS only during scroll */
 
 /* Footer Styles */
 footer {

@@ -1,4 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Set current year in copyright
+    document.querySelectorAll('.current-year').forEach(el => {
+        el.textContent = new Date().getFullYear();
+    });
+
     const currentUrl = window.location.href;
     let newUrl = currentUrl;
 
@@ -72,11 +77,17 @@ document.addEventListener('DOMContentLoaded', () => {
             parallaxTicking = false;
         }
 
+        let scrollTimeout;
         window.addEventListener('scroll', () => {
             if (!parallaxTicking && parallaxEnabled) {
                 parallaxTicking = true;
+                rellaxElements.forEach(el => { el.style.willChange = 'background-position'; });
                 requestAnimationFrame(updateParallax);
             }
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                rellaxElements.forEach(el => { el.style.willChange = ''; });
+            }, 200);
         }, { passive: true });
 
         updateParallax();
@@ -110,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.appendChild(lightbox);
 
             const img = document.createElement('img');
-            img.src = image.dataset.full || image.currentSrc || image.src;
+            img.src = image.currentSrc || image.src;
             img.alt = image.alt || 'Immagine ingrandita';
             lightbox.appendChild(img);
 
