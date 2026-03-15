@@ -15,12 +15,12 @@
     bottom: 0;
     left: 0;
     width: 100%;
-    background: linear-gradient(135deg, var(--color-burgundy) 0%, #7a1a2e 100%);
+    background: var(--color-burgundy);
     color: var(--color-beige);
     box-sizing: border-box;
     z-index: 20000;
     font-family: var(--font-primary);
-    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.15);
 }
 
 #cookie-banner .cb-inner {
@@ -74,19 +74,19 @@
 }
 
 .cb-btn {
-    padding: 11px 22px;
-    border: 2px solid;
-    border-radius: 8px;
-    font-family: var(--font-button);
-    font-size: 0.88rem;
-    font-weight: bold;
+    padding: 10px 22px;
+    border: 1px solid;
+    border-radius: 4px;
+    font-family: var(--font-primary);
+    font-size: 0.85rem;
+    font-weight: 400;
     cursor: pointer;
     transition: background-color 0.2s, transform 0.15s, box-shadow 0.2s;
     white-space: nowrap;
     min-width: 190px;
     text-align: center;
     box-sizing: border-box;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.03em;
 }
 
 .cb-btn:hover {
@@ -510,7 +510,7 @@ html {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: var(--color-beige);
+    background-color: #ffffff;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -684,18 +684,24 @@ html {
 
 @media (max-width: 767px) {
     .hero-social {
-        left: auto;
-        right: auto;
-        bottom: 30px;
+        left: 0;
+        right: 0;
+        bottom: auto;
+        top: 16px;
         flex-direction: row;
-        gap: 24px;
+        gap: 20px;
         width: 100%;
         justify-content: center;
     }
 
+    .hero-social__link svg {
+        width: 22px;
+        height: 22px;
+    }
+
     .hero-social::before,
     .hero-social::after {
-        width: 30px;
+        width: 24px;
         height: 1px;
     }
 }
@@ -703,7 +709,7 @@ html {
 /* Bio Section */
 .bio-section {
     text-align: center;
-    padding: 80px 20px;
+    padding: 40px 20px;
     background-color: #ffffff;
     position: relative;
     z-index: 10;
@@ -714,6 +720,19 @@ html {
     letter-spacing: 0.15em;
     text-transform: uppercase;
     font-weight: 400;
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+@media (max-width: 767px) {
+    .bio-section {
+        padding: 28px 20px;
+    }
+
+    .bio-section h2 {
+        margin-bottom: 12px;
+        font-size: 1.3rem;
+    }
 }
 
 .close {
@@ -731,7 +750,7 @@ html {
 
 /* Gallery Styles */
 .gallery {
-    padding: 80px 20px;
+    padding: 50px 20px 80px;
     text-align: center;
     background-color: #fafafa;
     color: var(--color-burgundy);
@@ -861,23 +880,24 @@ html {
     width: 44px;
     height: 44px;
     border-radius: 50%;
-    border: none;
-    background: rgba(92, 18, 32, 0.7);
-    color: var(--color-beige);
+    border: 1px solid #ccc;
+    background: #ffffff;
+    color: var(--color-burgundy);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.2s;
+    transition: background 0.2s, border-color 0.2s;
     z-index: 1001;
 }
 
 .lightbox-nav:hover {
-    background: rgba(92, 18, 32, 0.95);
+    background: #f5f5f5;
+    border-color: var(--color-burgundy);
 }
 
 .lightbox-nav:focus-visible {
-    outline: 3px solid var(--color-beige);
+    outline: 3px solid var(--color-burgundy);
     outline-offset: 2px;
 }
 
@@ -953,7 +973,7 @@ html {
 
 /* Back to Top Arrow */
 .back-to-top {
-    display: flex;
+    display: inline-flex;
     flex-direction: column;
     align-items: center;
     gap: 8px;
@@ -963,6 +983,7 @@ html {
     color: var(--color-beige);
     opacity: 0.5;
     transition: opacity 0.3s;
+    animation: floatUp 2.5s ease-in-out infinite;
 }
 
 .back-to-top:hover {
@@ -975,7 +996,7 @@ html {
     border-left: 1.5px solid var(--color-beige);
     border-bottom: 1.5px solid var(--color-beige);
     transform: rotate(135deg);
-    animation: floatUp 2.5s ease-in-out infinite;
+    display: block;
 }
 
 .back-to-top__label {
@@ -987,17 +1008,11 @@ html {
 }
 
 @keyframes floatUp {
-    0% {
-        margin-top: 0;
-        opacity: 0.6;
+    0%, 100% {
+        transform: translateY(0);
     }
     50% {
-        margin-top: -8px;
-        opacity: 0.9;
-    }
-    100% {
-        margin-top: 0;
-        opacity: 0.6;
+        transform: translateY(-4px);
     }
 }
 
@@ -1117,7 +1132,7 @@ footer {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.92);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1395,37 +1410,38 @@ nav ul li span {
 }
 
 .accordion__arrow {
-    position: absolute;
-    right: 0;
-    margin-top: 26px;
-    margin-right: 6%;
+    display: none;
+}
+
+.accordion__title-label {
     cursor: pointer;
+    display: block;
+    padding: 12px 20px;
+    margin: -12px -20px;
 }
 
-.accordion__arrow::before,
-.accordion__arrow::after {
+.accordion__title {
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 400;
+    margin-bottom: 0;
+}
+
+.accordion__title::after {
     content: "";
-    position: absolute;
+    display: block;
+    height: 1.5px;
     background-color: var(--color-burgundy);
-    width: 3px;
-    height: 9px;
-    transition: transform 0.25s ease-in-out;
+    transition: width 0.4s ease;
+    margin: 8px auto 0;
+    width: 100%;
 }
 
-.accordion__arrow::before {
-    transform: translateX(-2px) rotate(45deg);
-}
-
-.accordion__arrow::after {
-    transform: translateX(2px) rotate(-45deg);
-}
-
-.accordion__item input[type="checkbox"]:checked~.accordion__arrow::before {
-    transform: translateX(2px) rotate(45deg);
-}
-
-.accordion__item input[type="checkbox"]:checked~.accordion__arrow::after {
-    transform: translateX(-2px) rotate(-45deg);
+.accordion__item input[type="checkbox"]:checked ~ .accordion__title-label .accordion__title::after {
+    width: 30px;
 }
 
 .accordion__content-wrapper {
@@ -1450,14 +1466,7 @@ nav ul li span {
     }
 
     .accordion__item {
-        padding: 2% 12% 2% 4%;
-    }
-
-    .accordion__arrow {
-        top: 50%;
-        right: 16px;
-        margin-top: 0;
-        transform: translateY(-50%);
+        padding: 2% 4%;
     }
 }
 
@@ -1553,18 +1562,27 @@ table th {
 /* Eventi Section */
 .eventi-section {
     text-align: center;
-    padding: 80px 20px;
-    background-color: #ffffff;
+    padding: 60px 20px;
+    background-color: #fafafa;
     position: relative;
     z-index: 10;
 }
 
 .eventi-section h2 {
     color: var(--color-burgundy);
-    margin-bottom: 30px;
+    margin-bottom: 8px;
     letter-spacing: 0.15em;
     text-transform: uppercase;
     font-weight: 400;
+}
+
+.eventi-section h2::after {
+    content: "";
+    display: block;
+    width: 40px;
+    height: 2px;
+    background-color: var(--color-burgundy);
+    margin: 14px auto 30px;
 }
 
 .eventi-section p {
@@ -1588,32 +1606,44 @@ table th {
     text-align: left;
     background: #ffffff;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    transition: box-shadow 0.3s, transform 0.3s;
+}
+
+.evento-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
 }
 
 .evento-card__titolo {
     color: var(--color-burgundy);
     font-size: 1.15rem;
-    margin: 0 0 10px;
+    margin: 0 0 12px;
 }
 
 .evento-card__data {
     color: var(--color-burgundy);
-    font-weight: bold;
-    font-size: 0.95rem;
-    margin: 0 0 6px;
+    font-weight: 400;
+    font-size: 0.82rem;
+    margin: 0 0 8px;
     font-style: normal;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: inline-block;
+    border: 1px solid var(--color-burgundy);
+    padding: 4px 12px;
+    border-radius: 2px;
 }
 
 .evento-card__luogo {
     color: #444;
     font-size: 0.95rem;
-    margin: 0 0 6px;
+    margin: 10px 0 6px;
     font-style: normal;
 }
 
 .evento-card__dettagli {
-    color: #666;
-    font-size: 0.9rem;
+    color: #888;
+    font-size: 0.88rem;
     margin: 0;
     font-style: italic;
 }

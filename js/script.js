@@ -487,7 +487,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const scrollY = document.body.style.top;
         document.body.style.position = '';
         document.body.style.top = '';
+        document.documentElement.style.scrollBehavior = 'auto';
         window.scrollTo(0, parseInt(scrollY || '0') * -1);
+        document.documentElement.style.scrollBehavior = '';
     }
 
     window.addEventListener('scroll', () => {
