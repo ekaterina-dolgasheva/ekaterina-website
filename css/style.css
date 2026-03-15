@@ -565,28 +565,30 @@ html {
 .hero {
     position: relative;
     height: 100vh;
-    background-image: url('../images/hero/ekaterina-main.png');
-    background-image: image-set(
-        url('../images/hero/ekaterina-main.webp') type('image/webp'),
-        url('../images/hero/ekaterina-main.png') type('image/png')
-    );
-    background-size: cover;
-    background-position: center;
     display: flex;
     align-items: center;
     justify-content: flex-start;
     color: var(--color-white);
     z-index: 0;
+    overflow: hidden;
+}
+
+.hero-img-wrapper {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+}
+
+.hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
 }
 
 @media (max-width: 768px) {
-    .hero {
-        background-image: url('../images/hero/ekaterina-main-mobile.png');
-        background-image: image-set(
-            url('../images/hero/ekaterina-main-mobile.webp') type('image/webp'),
-            url('../images/hero/ekaterina-main-mobile.png') type('image/png')
-        );
-        background-position: center left;
+    .hero-img {
+        object-position: center left;
     }
 }
 
