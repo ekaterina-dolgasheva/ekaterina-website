@@ -277,103 +277,167 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Carousel + Lightbox with navigation
+    // Horizontal Scroll Slider + Lightbox with navigation
     (function() {
-        var carousel = document.querySelector('.carousel');
-        if (!carousel) return;
+        var slider = document.querySelector('.horiz-slider');
+        if (!slider) return;
 
-        var track = carousel.querySelector('.carousel-track');
-        var slides = carousel.querySelectorAll('.carousel-slide');
-        var dots = carousel.querySelectorAll('.carousel-dot');
-        var prevBtn = carousel.querySelector('.carousel-btn--prev');
-        var nextBtn = carousel.querySelector('.carousel-btn--next');
-        var total = slides.length;
-        var current = 0;
-        var autoplayInterval = null;
-        var AUTOPLAY_MS = 4500;
+        var origSlides = Array.prototype.slice.call(slider.querySelectorAll('.horiz-slide'));
+        var total = origSlides.length;
+        if (!total) return;
 
-        function goTo(index) {
-            current = ((index % total) + total) % total;
-            track.style.transform = 'translateX(-' + (current * 100) + '%)';
-            dots.forEach(function(dot, i) {
-                dot.setAttribute('aria-selected', i === current ? 'true' : 'false');
-            });
+        // Clone slides for infinite loop (append a full copy)
+        origSlides.forEach(function(slide) {
+            var clone = slide.cloneNode(true);
+            clone.setAttribute('data-clone', 'true');
+            slider.appendChild(clone);
+        });
+
+        var allSlides = slider.querySelectorAll('.horiz-slide');
+
+        // Infinite loop: when scrolled past originals, jump back
+        function checkLoop() {
+            var slideW = origSlides[0].offsetWidth +
+                parseFloat(getComputedStyle(slider).gap || 0);
+            var setWidth = slideW * total;
+            if (slider.scrollLeft >= setWidth) {
+                slider.scrollLeft -= setWidth;
+            } else if (slider.scrollLeft <= 0) {
+                slider.scrollLeft += setWidth;
+            }
         }
 
-        function next() { goTo(current + 1); }
-        function prev() { goTo(current - 1); }
+        // Start at first real slide (not at 0 to allow backward scroll)
+        requestAnimationFrame(function() {
+            var slideW = origSlides[0].offsetWidth +
+                parseFloat(getComputedStyle(slider).gap || 0);
+            slider.scrollLeft = slideW * 0;
+        });
+
+        // Parallax scale on scroll
+        var ticking = false;
+        function updateParallax() {
+            var sliderRect = slider.getBoundingClientRect();
+            var center = sliderRect.left + sliderRect.width / 2;
+            allSlides.forEach(function(slide) {
+                var rect = slide.getBoundingClientRect();
+                var slideCenter = rect.left + rect.width / 2;
+                var dist = Math.abs(center - slideCenter);
+                var maxDist = sliderRect.width / 2 + rect.width / 2;
+                var ratio = Math.min(dist / maxDist, 1);
+                var scale = 1 - ratio * 0.15;
+                var img = slide.querySelector('img');
+                if (img) img.style.transform = 'scale(' + scale + ')';
+            });
+            ticking = false;
+        }
+
+        var scrollTimer = null;
+        slider.addEventListener('scroll', function() {
+            if (!ticking) {
+                requestAnimationFrame(updateParallax);
+                ticking = true;
+            }
+            clearTimeout(scrollTimer);
+            scrollTimer = setTimeout(checkLoop, 100);
+        }, { passive: true });
+
+        updateParallax();
+
+        // Auto-scroll
+        var AUTOPLAY_MS = 3500;
+        var autoplayTimer = null;
+        var currentAuto = 0;
+
+        function getSlideWidth() {
+            return origSlides[0].offsetWidth +
+                parseFloat(getComputedStyle(slider).gap || 0);
+        }
+
+        function autoAdvance() {
+            currentAuto++;
+            var slideW = getSlideWidth();
+            var target = slideW * currentAuto;
+            slider.scrollTo({ left: target, behavior: 'smooth' });
+
+            // After smooth scroll ends, check if we need to loop
+            setTimeout(function() {
+                if (currentAuto >= total) {
+                    slider.style.scrollSnapType = 'none';
+                    slider.scrollLeft = slider.scrollLeft - slideW * total;
+                    currentAuto = currentAuto - total;
+                    // Re-enable snap after instant jump
+                    requestAnimationFrame(function() {
+                        slider.style.scrollSnapType = '';
+                    });
+                }
+                updateParallax();
+            }, 600);
+        }
 
         function startAutoplay() {
             stopAutoplay();
-            autoplayInterval = setInterval(next, AUTOPLAY_MS);
+            autoplayTimer = setInterval(autoAdvance, AUTOPLAY_MS);
         }
 
         function stopAutoplay() {
-            if (autoplayInterval) { clearInterval(autoplayInterval); autoplayInterval = null; }
+            if (autoplayTimer) { clearInterval(autoplayTimer); autoplayTimer = null; }
         }
 
-        function restartAutoplay() { startAutoplay(); }
+        // Sync currentAuto with manual scroll position
+        function syncAutoIndex() {
+            var slideW = getSlideWidth();
+            currentAuto = Math.round(slider.scrollLeft / slideW);
+        }
 
-        // Arrows
-        prevBtn.addEventListener('click', function() { prev(); restartAutoplay(); });
-        nextBtn.addEventListener('click', function() { next(); restartAutoplay(); });
+        // Pause on interaction
+        slider.addEventListener('mouseenter', stopAutoplay);
+        slider.addEventListener('mouseleave', function() { syncAutoIndex(); startAutoplay(); });
+        slider.addEventListener('touchstart', stopAutoplay, { passive: true });
+        slider.addEventListener('touchend', function() { syncAutoIndex(); startAutoplay(); }, { passive: true });
 
-        // Dots
-        dots.forEach(function(dot, i) {
-            dot.addEventListener('click', function() { goTo(i); restartAutoplay(); });
-        });
-
-        // Pause on hover/focus
-        carousel.addEventListener('mouseenter', stopAutoplay);
-        carousel.addEventListener('mouseleave', startAutoplay);
-        carousel.addEventListener('focusin', stopAutoplay);
-        carousel.addEventListener('focusout', startAutoplay);
-
-        // Touch swipe
-        var touchStartX = 0, touchStartY = 0, touchDx = 0, swiping = false;
-        carousel.addEventListener('touchstart', function(e) {
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
-            touchDx = 0;
-            swiping = false;
-        }, { passive: true });
-
-        carousel.addEventListener('touchmove', function(e) {
-            touchDx = e.touches[0].clientX - touchStartX;
-            var dy = Math.abs(e.touches[0].clientY - touchStartY);
-            if (Math.abs(touchDx) > dy && Math.abs(touchDx) > 10) {
-                swiping = true;
-                e.preventDefault();
-            }
-        }, { passive: false });
-
-        carousel.addEventListener('touchend', function() {
-            if (swiping && Math.abs(touchDx) > 40) {
-                if (touchDx < 0) next(); else prev();
-                restartAutoplay();
-            }
-        }, { passive: true });
-
-        // Keyboard
-        carousel.setAttribute('tabindex', '0');
-        carousel.addEventListener('keydown', function(e) {
-            if (e.key === 'ArrowLeft') { prev(); restartAutoplay(); e.preventDefault(); }
-            if (e.key === 'ArrowRight') { next(); restartAutoplay(); e.preventDefault(); }
-        });
-
-        // IntersectionObserver: stop autoplay when out of viewport
-        var carouselObserver = new IntersectionObserver(function(entries) {
+        // Start autoplay when visible
+        var sliderObserver = new IntersectionObserver(function(entries) {
             entries.forEach(function(entry) {
-                if (entry.isIntersecting) startAutoplay();
+                if (entry.isIntersecting) { syncAutoIndex(); startAutoplay(); }
                 else stopAutoplay();
             });
         }, { threshold: 0.3 });
-        carouselObserver.observe(carousel);
+        sliderObserver.observe(slider);
 
-        // Click slide -> Lightbox with navigation
-        slides.forEach(function(slide, i) {
-            slide.addEventListener('click', function() {
-                openLightbox(i);
+        // Desktop drag-to-scroll
+        var isDragging = false, startX = 0, scrollLeftStart = 0;
+        slider.addEventListener('mousedown', function(e) {
+            isDragging = true;
+            slider.classList.add('grabbing');
+            startX = e.pageX - slider.offsetLeft;
+            scrollLeftStart = slider.scrollLeft;
+        });
+        slider.addEventListener('mouseleave', function() {
+            isDragging = false;
+            slider.classList.remove('grabbing');
+        });
+        slider.addEventListener('mouseup', function() {
+            isDragging = false;
+            slider.classList.remove('grabbing');
+        });
+        slider.addEventListener('mousemove', function(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+            var x = e.pageX - slider.offsetLeft;
+            slider.scrollLeft = scrollLeftStart - (x - startX);
+        });
+
+        // Click slide -> Lightbox (ignore if dragged)
+        var dragMoved = false;
+        slider.addEventListener('mousedown', function() { dragMoved = false; });
+        slider.addEventListener('mousemove', function() { if (isDragging) dragMoved = true; });
+
+        // Attach click to all slides (including clones), mapping to original index
+        allSlides.forEach(function(slide, i) {
+            slide.addEventListener('click', function(e) {
+                if (dragMoved) { e.preventDefault(); return; }
+                openLightbox(i % total);
             });
         });
 
@@ -395,28 +459,25 @@ document.addEventListener('DOMContentLoaded', () => {
             closeBtn.innerHTML = '&times;';
             lightbox.appendChild(closeBtn);
 
-            // Nav prev
             var lbPrev = document.createElement('button');
             lbPrev.className = 'lightbox-nav lightbox-nav--prev';
             lbPrev.setAttribute('aria-label', 'Foto precedente');
             lbPrev.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>';
             lightbox.appendChild(lbPrev);
 
-            // Nav next
             var lbNext = document.createElement('button');
             lbNext.className = 'lightbox-nav lightbox-nav--next';
             lbNext.setAttribute('aria-label', 'Foto successiva');
             lbNext.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>';
             lightbox.appendChild(lbNext);
 
-            // Counter
             var counter = document.createElement('div');
             counter.className = 'lightbox-counter';
             lightbox.appendChild(counter);
 
             function showImage(idx) {
                 lbIndex = ((idx % total) + total) % total;
-                var slideImg = slides[lbIndex].querySelector('img');
+                var slideImg = origSlides[lbIndex].querySelector('img');
                 img.classList.add('lb-fade');
                 setTimeout(function() {
                     img.src = slideImg.currentSrc || slideImg.src;
@@ -427,7 +488,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             showImage(lbIndex);
-            // Show first image immediately (no fade-in delay)
             img.classList.remove('lb-fade');
 
             disableScroll();
@@ -438,6 +498,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 lightbox.remove();
                 enableScroll();
                 enableRellax();
+                syncAutoIndex();
                 startAutoplay();
                 document.removeEventListener('keydown', onKey);
             }
@@ -457,7 +518,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             document.addEventListener('keydown', onKey);
 
-            // Lightbox touch swipe
             var lbTouchX = 0, lbDx = 0, lbSwiping = false;
             lightbox.addEventListener('touchstart', function(e) {
                 lbTouchX = e.touches[0].clientX;
